@@ -2,6 +2,19 @@ const Discord = require("discord.js")
 const client = new Discord.Client()
 require('dotenv').config()
 
+function has_im(string)
+{
+    let tests = ['im', 'i\'m', 'Im', 'I\'m', 'imma', 'Imma', 'I\’m', 'i\’m']
+    let index = -1
+    for (i = 0; i < tests.length; i++)
+    {
+        index = string.indexOf(tests[i])
+        if (index !== -1)
+            return index
+    }
+    return -1
+}
+
 client.on("ready", () =>
     {
         console.log(`Logged in as ${client.user.tag}!`)
@@ -31,22 +44,9 @@ client.on("message", msg =>
                     {mesg.react('🚫');mesg.react('✅')})
             }
         }
-        else if (!msg.author.bot && ((words.indexOf('im') !== -1) ||
-            (words.indexOf('i\'m') !== -1) || (words.indexOf('I\'m') !== -1) ||
-            (words.indexOf('Im') !== -1) || (words.indexOf('imma') !== -1) ||
-            words.indexOf('Imma') !== -1))
+        else if (!msg.author.bot && (has_im(words) >= 0))
         {
-            var index = words.indexOf("im")
-            if (index === -1)
-                index = words.indexOf("i\'m")
-            if (index === -1)
-                index = words.indexOf("I\'m")
-            if (index === -1)
-                index = words.indexOf("Im")
-            if (index === -1) 
-                index = words.indexOf('Imma')
-            if (index === -1) 
-                index = words.indexOf('imma')
+            var index = has_im(words)
             console.log("== I'm found at ", index)
             var string = "Hi "
             for (i = index + 1; i < words.length - 1; i++)
@@ -54,7 +54,14 @@ client.on("message", msg =>
                 string = string.concat(words[i], " ")
             }
             string = string.concat(words[words.length - 1])
-            string = string.concat(", I'm Dad!")
+            if (words[1] == "multitool" || words[1] == "Multitool")
+            {
+                string = string.concat(", I'm... Wait a minute!")
+            }
+            else
+            {
+                string = string.concat(", I'm Dad!")
+            }
             msg.channel.send(string)
         }
         else if (msg.content === "!helpme")
